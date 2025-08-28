@@ -1,34 +1,84 @@
 {
-  "name": "playground",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+  "name": "@ios-drawer/react",
+  "version": "1.0.0",
+  "description": "A comprehensive, portable, iOS-friendly drawer component for React with smooth animations and gesture support",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./styles": "./dist/drawer.css"
   },
-  "dependencies": {
-    "clsx": "^2.1.1",
-    "next": "15.2.4",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "vaul": "^1.1.2"
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c --watch",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src --ext .ts,.tsx",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "react",
+    "drawer",
+    "modal",
+    "ios",
+    "mobile",
+    "gesture",
+    "swipe",
+    "bottom-sheet",
+    "sheet",
+    "popup",
+    "overlay",
+    "animation",
+    "vaul"
+  ],
+  "author": "iOS Drawer Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ios-drawer/react.git"
+  },
+  "homepage": "https://github.com/ios-drawer/react#readme",
+  "bugs": {
+    "url": "https://github.com/ios-drawer/react/issues"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
+    "framer-motion": ">=10.0.0"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9",
-    "eslint-config-next": "15.2.4",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@types/jest": "^29.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-react": "^7.0.0",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "jest": "^29.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "framer-motion": "^10.0.0",
+    "rollup": "^3.0.0",
+    "rollup-plugin-typescript2": "^0.35.0",
+    "rollup-plugin-postcss": "^4.0.0",
+    "typescript": "^5.0.0",
+    "tailwindcss": "^3.0.0",
+    "autoprefixer": "^10.0.0",
+    "postcss": "^8.0.0"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "sharp"
-    ]
-  }
+  "sideEffects": [
+    "**/*.css"
+  ]
 }

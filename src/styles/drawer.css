@@ -1,0 +1,691 @@
+/**
+ * iOS-Friendly Drawer Component Styles
+ * Comprehensive CSS for all drawer functionality including iOS-specific fixes
+ */
+
+/* Root CSS Variables */
+:root {
+  /* Safe area insets - these are set by iOS */
+  --safe-area-inset-top: env(safe-area-inset-top, 0px);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-inset-left: env(safe-area-inset-left, 0px);
+  --safe-area-inset-right: env(safe-area-inset-right, 0px);
+  
+  /* Viewport height variables */
+  --viewport-height: 100vh;
+  --dynamic-viewport-height: 100vh;
+  
+  /* Drawer z-index */
+  --drawer-overlay-z: 40;
+  --drawer-content-z: 50;
+  
+  /* Animation durations */
+  --drawer-duration-fast: 150ms;
+  --drawer-duration-normal: 300ms;
+  --drawer-duration-slow: 500ms;
+  
+  /* Easing functions */
+  --drawer-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --drawer-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --drawer-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  /* Drawer colors */
+  --drawer-overlay-bg: rgba(0, 0, 0, 0.5);
+  --drawer-content-bg: white;
+  --drawer-content-bg-dark: rgb(17, 24, 39);
+  --drawer-border: rgb(229, 231, 235);
+  --drawer-border-dark: rgb(55, 65, 81);
+  --drawer-handle: rgb(209, 213, 219);
+  --drawer-handle-dark: rgb(75, 85, 99);
+  
+  /* Drawer shadows */
+  --drawer-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --drawer-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+  /* Border radius */
+  --drawer-border-radius: 12px;
+  --drawer-border-radius-lg: 16px;
+}
+
+/* Dynamic viewport height support for newer iOS */
+@supports (height: 100dvh) {
+  :root {
+    --dynamic-viewport-height: 100dvh;
+  }
+}
+
+/* Screen reader only content */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Safe area utilities */
+.pt-safe {
+  padding-top: var(--safe-area-inset-top);
+}
+
+.pb-safe {
+  padding-bottom: var(--safe-area-inset-bottom);
+}
+
+.pl-safe {
+  padding-left: var(--safe-area-inset-left);
+}
+
+.pr-safe {
+  padding-right: var(--safe-area-inset-right);
+}
+
+.p-safe {
+  padding-top: var(--safe-area-inset-top);
+  padding-bottom: var(--safe-area-inset-bottom);
+  padding-left: var(--safe-area-inset-left);
+  padding-right: var(--safe-area-inset-right);
+}
+
+/* Full height using dynamic viewport */
+.h-dvh {
+  height: var(--dynamic-viewport-height);
+}
+
+.min-h-dvh {
+  min-height: var(--dynamic-viewport-height);
+}
+
+.max-h-dvh {
+  max-height: var(--dynamic-viewport-height);
+}
+
+/* iOS Drawer Root */
+.ios-drawer-root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--drawer-content-z);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.ios-drawer-root[data-direction="top"] {
+  align-items: flex-start;
+}
+
+.ios-drawer-root[data-direction="left"] {
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.ios-drawer-root[data-direction="right"] {
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* iOS Drawer Overlay */
+.ios-drawer-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--drawer-overlay-z);
+  background: var(--drawer-overlay-bg);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity var(--drawer-duration-normal) var(--drawer-ease-out);
+}
+
+.ios-drawer-overlay[data-state="open"] {
+  opacity: 1;
+}
+
+.ios-drawer-overlay[data-state="closed"] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* iOS Drawer Content */
+.ios-drawer-content {
+  position: fixed;
+  z-index: var(--drawer-content-z);
+  background: var(--drawer-content-bg);
+  border: 1px solid var(--drawer-border);
+  box-shadow: var(--drawer-shadow);
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  transform-origin: center bottom;
+  will-change: transform, opacity;
+  
+  /* Hardware acceleration */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Content positioning by direction */
+.ios-drawer-content[data-direction="bottom"] {
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-top-left-radius: var(--drawer-border-radius-lg);
+  border-top-right-radius: var(--drawer-border-radius-lg);
+  border-bottom: none;
+  transform-origin: center top;
+  padding-bottom: var(--safe-area-inset-bottom);
+}
+
+.ios-drawer-content[data-direction="top"] {
+  top: 0;
+  left: 0;
+  right: 0;
+  border-bottom-left-radius: var(--drawer-border-radius-lg);
+  border-bottom-right-radius: var(--drawer-border-radius-lg);
+  border-top: none;
+  transform-origin: center bottom;
+  padding-top: var(--safe-area-inset-top);
+}
+
+.ios-drawer-content[data-direction="left"] {
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-top-right-radius: var(--drawer-border-radius-lg);
+  border-bottom-right-radius: var(--drawer-border-radius-lg);
+  border-left: none;
+  transform-origin: right center;
+  padding-left: var(--safe-area-inset-left);
+}
+
+.ios-drawer-content[data-direction="right"] {
+  right: 0;
+  top: 0;
+  bottom: 0;
+  border-top-left-radius: var(--drawer-border-radius-lg);
+  border-bottom-left-radius: var(--drawer-border-radius-lg);
+  border-right: none;
+  transform-origin: left center;
+  padding-right: var(--safe-area-inset-right);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .ios-drawer-content {
+    background: var(--drawer-content-bg-dark);
+    border-color: var(--drawer-border-dark);
+  }
+}
+
+/* Drawer content states */
+.ios-drawer-content[data-state="open"] {
+  animation: drawer-slide-in var(--drawer-duration-normal) var(--drawer-ease-out) forwards;
+}
+
+.ios-drawer-content[data-state="closed"] {
+  animation: drawer-slide-out var(--drawer-duration-normal) var(--drawer-ease-out) forwards;
+}
+
+/* Handle container */
+.ios-drawer-handle-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+  outline: none;
+  border-radius: var(--drawer-border-radius);
+  transition: background-color var(--drawer-duration-fast) var(--drawer-ease-out);
+}
+
+.ios-drawer-handle-container:active {
+  cursor: grabbing;
+}
+
+.ios-drawer-handle-container:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.ios-drawer-handle-container:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+@media (prefers-color-scheme: dark) {
+  .ios-drawer-handle-container:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}
+
+/* Handle bar */
+.ios-drawer-handle {
+  width: 48px;
+  height: 6px;
+  background: var(--drawer-handle);
+  border-radius: 3px;
+  transition: all var(--drawer-duration-fast) var(--drawer-ease-out);
+}
+
+@media (prefers-color-scheme: dark) {
+  .ios-drawer-handle {
+    background: var(--drawer-handle-dark);
+  }
+}
+
+.ios-drawer-handle-container:hover .ios-drawer-handle {
+  background: rgb(156, 163, 175);
+  width: 56px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ios-drawer-handle-container:hover .ios-drawer-handle {
+    background: rgb(107, 114, 128);
+  }
+}
+
+.ios-drawer-handle-container:active .ios-drawer-handle {
+  background: rgb(107, 114, 128);
+  width: 64px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .ios-drawer-handle-container:active .ios-drawer-handle {
+    background: rgb(156, 163, 175);
+  }
+}
+
+/* Header */
+.ios-drawer-header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px 16px 8px 16px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgb(17, 24, 39);
+  border-bottom: 1px solid var(--drawer-border);
+  flex-shrink: 0;
+}
+
+@media (min-width: 640px) {
+  .ios-drawer-header {
+    text-align: left;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .ios-drawer-header {
+    color: rgb(243, 244, 246);
+    border-bottom-color: var(--drawer-border-dark);
+  }
+}
+
+/* Footer */
+.ios-drawer-footer {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+  padding: 8px 16px 16px 16px;
+  background: rgb(249, 250, 251);
+  border-top: 1px solid var(--drawer-border);
+  border-bottom-left-radius: var(--drawer-border-radius);
+  border-bottom-right-radius: var(--drawer-border-radius);
+  flex-shrink: 0;
+  padding-bottom: calc(16px + var(--safe-area-inset-bottom));
+}
+
+@media (min-width: 640px) {
+  .ios-drawer-footer {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  .ios-drawer-footer {
+    background: rgb(31, 41, 55);
+    border-top-color: var(--drawer-border-dark);
+  }
+}
+
+/* Trigger button */
+.ios-drawer-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: var(--drawer-border-radius);
+  cursor: pointer;
+  outline: none;
+  transition: all var(--drawer-duration-fast) var(--drawer-ease-out);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ios-drawer-trigger:hover {
+  background: #2563eb;
+}
+
+.ios-drawer-trigger:active {
+  background: #1d4ed8;
+  transform: scale(0.98);
+}
+
+.ios-drawer-trigger:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.ios-drawer-trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ios-drawer-trigger:disabled:hover {
+  background: #3b82f6;
+  transform: none;
+}
+
+/* Prevent bounce scrolling on iOS */
+.ios-drawer-prevent-bounce {
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Animation keyframes */
+@keyframes drawer-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drawer-slide-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes drawer-slide-in-top {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drawer-slide-out-top {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+}
+
+@keyframes drawer-slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawer-slide-out-left {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes drawer-slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawer-slide-out-right {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+}
+
+/* Apply different animations based on direction */
+.ios-drawer-content[data-direction="top"][data-state="open"] {
+  animation: drawer-slide-in-top var(--drawer-duration-normal) var(--drawer-ease-out) forwards;
+}
+
+.ios-drawer-content[data-direction="top"][data-state="closed"] {
+  animation: drawer-slide-out-top var(--drawer-duration-normal) var(--drawer-ease-out) forwards;
+}
+
+.ios-drawer-content[data-direction="left"][data-state="open"] {
+  animation: drawer-slide-in-left var(--drawer-duration-normal) var(--drawer-ease-out) forwards;
+}
+
+.ios-drawer-content[data-direction="left"][data-state="closed"] {
+  animation: drawer-slide-out-left var(--drawer-duration-normal) var(--drawer-ease-out) forwards;
+}
+
+.ios-drawer-content[data-direction="right"][data-state="open"] {
+  animation: drawer-slide-in-right var(--drawer-duration-normal) var(--drawer-ease-out) forwards;
+}
+
+.ios-drawer-content[data-direction="right"][data-state="closed"] {
+  animation: drawer-slide-out-right var(--drawer-duration-normal) var(--drawer-ease-out) forwards;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .ios-drawer-content,
+  .ios-drawer-overlay,
+  .ios-drawer-handle,
+  .ios-drawer-trigger {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .ios-drawer-content {
+    border-width: 2px;
+  }
+  
+  .ios-drawer-handle {
+    background: ButtonText;
+  }
+  
+  .ios-drawer-trigger {
+    border: 2px solid ButtonText;
+  }
+}
+
+/* iOS Safari specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* Prevent iOS Safari input zoom */
+  .ios-drawer input,
+  .ios-drawer textarea,
+  .ios-drawer select {
+    font-size: 16px !important;
+    -webkit-appearance: none;
+    border-radius: 0;
+  }
+  
+  /* Fix iOS Safari viewport units */
+  .ios-drawer-content {
+    height: calc(var(--dynamic-viewport-height) - var(--safe-area-inset-top) - var(--safe-area-inset-bottom));
+  }
+  
+  /* Prevent iOS Safari rubber band scrolling */
+  .ios-drawer-content {
+    overscroll-behavior-y: none;
+  }
+}
+
+/* PWA and standalone display mode support */
+@media (display-mode: standalone) {
+  .ios-drawer-content {
+    padding-top: calc(var(--safe-area-inset-top) + 8px);
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+  .ios-drawer-content[data-direction="bottom"],
+  .ios-drawer-content[data-direction="top"] {
+    max-height: 80vh;
+  }
+}
+
+/* Small screen optimizations */
+@media (max-width: 480px) {
+  .ios-drawer-content[data-direction="left"],
+  .ios-drawer-content[data-direction="right"] {
+    max-width: 85vw;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 768px) {
+  .ios-drawer-content[data-direction="bottom"],
+  .ios-drawer-content[data-direction="top"] {
+    max-width: 500px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+  
+  .ios-drawer-content[data-direction="left"],
+  .ios-drawer-content[data-direction="right"] {
+    max-width: 400px;
+  }
+}
+
+/* Focus management */
+.ios-drawer:focus-within {
+  outline: none;
+}
+
+.ios-drawer-content:focus {
+  outline: none;
+}
+
+/* Loading state */
+.ios-drawer-loading {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.ios-drawer-loading .ios-drawer-content {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Utility classes for common patterns */
+.drawer-scrollable {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.drawer-content-spacing {
+  padding: 16px;
+}
+
+.drawer-separator {
+  height: 1px;
+  background: var(--drawer-border);
+  margin: 8px 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  .drawer-separator {
+    background: var(--drawer-border-dark);
+  }
+}
+
+/* Snap point indicators (optional visual enhancement) */
+.drawer-snap-indicator {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  opacity: 0.3;
+  transition: opacity var(--drawer-duration-fast) var(--drawer-ease-out);
+}
+
+.drawer-snap-indicator.active {
+  opacity: 1;
+}
+
+.drawer-snap-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  transition: all var(--drawer-duration-fast) var(--drawer-ease-out);
+}
+
+.drawer-snap-dot.active {
+  background: #3b82f6;
+  transform: scale(1.2);
+}
